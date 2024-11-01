@@ -1,0 +1,440 @@
+
+  .container {
+    display: flex;
+    flex-direction: column; /* Apilar los elementos en columna */
+    width: 100%; /* Tomar el ancho completo */
+  }
+  
+  .content-examen {
+    max-width: 825px; /* Limitar el ancho máximo */
+    margin: 20px; /* Espacio desde el borde */
+  }
+  
+  /* Header */
+  .exam-header {
+    display: flex;
+    padding: 20px;
+    background-color: #f5f5f5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  
+    flex-direction: column; /* Coloca los elementos en columna */
+    align-items: center; /* Centra los elementos horizontalmente */
+    text-align: left; /* Alinea el texto a la izquierda */
+  }
+  
+  .exam-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinea a la izquierda */
+    margin-bottom: 5px;
+  }
+  
+  .exam-status.warning {
+    color: red;
+    margin-right: 10px;
+  }
+  
+  .verified {
+    letter-spacing: -0.5px; /* Reduce el espacio entre las letras */
+    font-size: 0.4em; /* Tamaño más pequeño para el texto de verificación */
+    font-weight: 400; /* Hace la fuente más delgada */
+    background-color: #d4f5d0; /* Fondo verde claro */
+    color: #84d081; /* Color del texto */
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 8px; /* Separación del título */
+    border-radius: 30px;
+  }
+  
+  .search-bar {
+    padding-right: 30px; /* Espacio para el ícono */
+  }
+  
+  .search-icon {
+    position: relative; /* Alinea el ícono en relación al campo de búsqueda */
+    margin-left: -25px; /* Ajusta el margen izquierdo para que se superponga */
+    color: #888; /* Color del ícono */
+    pointer-events: none; /* Evita que se pueda hacer clic en el ícono */
+  }
+  .exam-header h1,
+  .paragraph {
+    border-radius: 10px;
+    text-align: left; /* Alinea el texto a la izquierda */
+    width: 100%; /* Asegura que el texto ocupe todo el ancho */
+    max-width: 800px; /* Define un ancho máximo para el contenido */
+    color: #666; /* Color gris suave */
+    font-size: 0.8em; /* Aumenta ligeramente el tamaño del texto */
+    line-height: 1.6em; /* Aumenta el interlineado para mayor legibilidad */
+    margin: 10px 0 0 0;
+  }
+  .exam-header h1 {
+    font-size: 28px;
+    color: #232531; /* Color gris suave */
+  }
+  .paragraph {
+    text-align: justify; /* Justifica el texto como en Word */
+    margin-top: 10px;
+    width: 100%; /* Ocupa todo el ancho */
+    max-width: 750px; /* Limita el ancho máximo */
+  }
+  
+  /* Filtros */
+  .exam-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacio entre los elementos de filtro */
+    margin-bottom: 20px;
+  }
+  
+  .filter-button,
+  .generate-button {
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    background-color: #f0f0f000;
+    cursor: pointer;
+  }
+  .generate-button {
+    margin-left: 18px;
+    width: 87px;
+  }
+  
+  /* ------------------*/
+  /* Estilos iniciales de los botones de filtro */
+  .filter-button {
+    font-weight: normal;
+    padding: 10px 15px;
+    border: 1px solid transparent; /* Sin borde visible por defecto */
+    background-color: transparent; /* Sin fondo */
+    color: black; /* Color del texto */
+    cursor: pointer; /* Cursor de mano */
+    transition: all 0.3s ease; /* Para animaciones suaves */
+  }
+  
+  /* Efecto hover (cuando el mouse pasa sobre el botón) */
+  .filter-button:hover {
+    font-weight: bold; /* Negrita */
+    color: black; /* Color del texto */
+    border: 1px solid #ccc; /* Añadir borde en hover */
+  }
+  
+  /* Estado activo, cuando el botón ha sido clicado */
+  .filter-button.active {
+    font-weight: bold; /* Negrita */
+    color: black; /* Color del texto */
+    border: 1px solid #ccc; /* Añadir borde */
+  }
+  
+  /* Cambia el color de los botones que no están activos */
+  .filter-button.inactive {
+    color: #999; /* Color plomo */
+    font-weight: normal; /* Sin negrita */
+    border: 1px solid transparent; /* Sin borde visible */
+  }
+  
+  /* Generar botón animado */
+  .generate-button {
+    border-radius: 10px;
+    background-color: #3a6dbe;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .list {
+    list-style-type: none; /* Eliminar viñetas */
+    padding: 0; /* Eliminar padding por defecto */
+    margin: 0; /* Eliminar margen por defecto */
+  }
+  
+  .exam-card {
+    position: relative; /* Necesario para el posicionamiento absoluto de .options */
+     
+    border-radius: 5px; /* Esquinas redondeadas */
+    margin: 10px 0; /* Espacio entre exámenes */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    box-sizing: border-box; /* Incluir padding y borde en el ancho */
+    display: flex;
+    flex-direction: column; /* Colocar el contenido en columna */
+    padding: 15px;
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    width: 100%; /* Ocupa todo el ancho */
+    text-align: left; /* Alinea el texto a la izquierda */
+  }
+  
+  .exam-title {
+    display: flex;
+    align-items: center; /* Alinear verticalmente el texto y el icono */
+  }
+  
+  .exam-status {
+    margin-right: 10px; /* Espacio entre el icono y el título */
+  }
+  
+  /* Animación al hacer hover sobre el botón de generar */
+  .generate-button:hover {
+    background-color: #2a2188;
+  }
+  .search-icon {
+    position: relative;
+    margin-left: -25px;
+    color: #888;
+    pointer-events: none; /* Para que no se pueda hacer clic */
+    opacity: 1; /* Comienza visible */
+    transition: opacity 0.3s ease; /* Añadir una animación de desaparición */
+  }
+  /* ------------------*/
+  .search-bar {
+    width: 100%;
+    padding: 10px;
+    flex-grow: 1; /* Crece para ocupar el espacio */
+  }
+  .search-bar:focus + .search-icon {
+    opacity: 0; /* Cuando el input recibe foco, desaparece el ícono */
+  }
+  
+  /* Lista de exámenes */
+  .exam-list {
+    display: flex;
+    flex-direction: column; /* Apilar los exámenes en columna */
+    width: 97%; /* Ocupa todo el ancho del contenedor */
+  }
+  
+  /* Estilos para el contenedor global */
+  .content-two {
+    background-color: white; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 20px; /* Espaciado interno */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Borde difuminado plomo */
+    margin: 20px 0; /* Margen entre otros elementos */
+  }
+  
+  /* Opcional: Ajustes para el contenido interno si es necesario */
+  .exam-filter,
+  .exam-list {
+    margin-bottom: 20px;
+  }
+  
+  /* Lista de exámenes --- FECHA */
+  
+  .exam-info {
+    display: flex;
+    justify-content: flex-start; /* Alinea la información a la izquierda */
+    align-items: center;
+    gap: 10px;
+   
+      align-items: center;
+      
+      font-size: 14px;
+      color: #757575;
+  }
+  
+  .exam-info .date {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #616161;
+  }
+  
+  .exam-info .duration::before {
+      content: '⏰';
+      margin-right: 4px;
+  }
+  
+  .exam-info .favorite {
+      font-size: 16px;
+      cursor: pointer;
+      color: #616161;
+  }
+  
+  /* Lista de exámenes ---  */
+  
+  /* PAGINACION ---  */
+  .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+  }
+  
+  .pagination button {
+      border: 1px solid #ddd;
+      padding: 10px 15px;
+      margin: 0 5px;
+      cursor: pointer;
+      background-color: white;
+      border-radius: 5px;
+  }
+  
+  .pagination button:hover {
+      background-color: #f0f0f0;
+  }
+  
+  .pagination button:disabled {
+      cursor: not-allowed;
+      background-color: #f9f9f9;
+  }
+  
+  .pagination button.active {
+      background-color: #f0f0ff;
+      border-color: #aaa;
+      color: #333;
+  }
+  /* PAGINACION ---  */
+  
+  
+  
+  
+  .centered-header {
+    text-align: center; /* Centra el texto del h1 */
+    margin: 20px 0; /* Margen superior e inferior */
+  }
+  
+  
+  
+  .exam-title h3 {
+    font-size: 0.85em;
+    align-items: flex-start;
+  }
+  .options {
+      position: absolute;
+      top: 27px;
+      right: 20px;
+      font-size: 16px;
+      color: #757575;
+      cursor: pointer;
+      
+  }
+  .dropdown-menu {
+      display: none; /* Oculto por defecto */
+      position: absolute;
+      top: 36px; /* Ajusta esta posición según sea necesario */
+      right: 0;
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+  }
+  
+  .dropdown-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 10px;
+  }
+  
+  .dropdown-menu ul li {
+      margin: 0;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .dropdown-menu ul li:last-child {
+      border-bottom: none;
+  }
+  
+  .dropdown-menu ul li:hover {
+      background-color: #f5f5f5;
+  }
+  
+  .dropdown-menu ul li a {
+      text-decoration: none;
+      color: #333;
+  }
+  
+  
+  
+  
+  
+  
+  
+  .list.active {
+      display: block;
+  }
+  
+  .tags {
+      display: flex; 
+      flex-wrap: wrap; 
+      max-width: 100%; /* O un valor específico como 400px */
+      overflow: hidden; /* Evita que el contenido desborde el contenedor */
+  }
+  
+  .tag {
+    display: inline-block; /* Asegura que el fondo se ajuste al contenido */
+    padding: 5px 12px; /* Espaciado interno para los tags */
+  
+    margin: 5px; /* Espacio entre tags */
+    margin-left: 8.7px; /* Espacio entre tags */
+    font-size: 0.6em; /* Ajusta el tamaño de fuente según sea necesario */
+    box-shadow: 0 2px 5px rgba(128, 128, 128, 0.5); /* Sombra plomo debajo del tag */
+  }
+  
+  /* Colores de fondo y texto para los tags */
+  .tag-mate {
+    background-color: rgba(173, 216, 230, 0.8); /* Azul claro */
+    color: #007bff; /* Azul fuerte */
+  }
+  
+  .tag-algebra {
+    background-color: rgba(144, 238, 144, 0.8); /* Verde claro */
+    color: #28a745; /* Verde fuerte */
+  }
+  
+  .tag-quiz {
+    background-color: rgba(255, 255, 224, 0.8); /* Amarillo claro */
+    color: #ffc107; /* Amarillo fuerte */
+  }
+  
+  .tag-pollito {
+    background-color: rgba(173, 216, 230, 0.8); /* Aqua claro */
+    color: #17a2b8; /* Aqua fuerte */
+  }
+  
+  .tag-uni {
+    background-color: rgba(221, 160, 221, 0.8); /* Morado claro */
+    color: #6f42c1; /* Morado fuerte */
+  }
+  
+  .tag-verified {
+    background-color: rgba(255, 192, 203, 0.8); /* Rosa claro */
+    color: #dc3545; /* Rojo fuerte */
+  }
+  
+  .tag-geo {
+      background-color: rgba(219, 255, 192, 0.8); /* Rosa claro */
+      color: #2d6739; /* Rosa fuerte */
+  }
+  
+  .tag-estadistica {
+      background-color: rgba(221, 160, 221, 0.8); /* Lavanda */
+      color: #9370db; /* Púrpura fuerte */
+  }
+  
+  
+  
+  .tag-calc {
+      background-color: rgba(255, 218, 185, 0.8); /* Durazno claro */
+      color: #ff4500; /* Naranja fuerte */
+  }
+  
+  .tag-ciencias {
+      background-color: rgba(176, 224, 230, 0.8); /* Azul celeste */
+      color: #4682b4; /* Azul marino */
+  }
+  
+  .tag-fisica {
+      background-color: rgba(240, 128, 128, 0.8); /* Rojo claro */
+      color: #ff0000; /* Rojo fuerte */
+  }
+  
+  .tag-quimica {
+      background-color: rgba(152, 251, 152, 0.8); /* Verde pálido */
+      color: #32cd32; /* Verde fuerte */
+  }
+  

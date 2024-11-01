@@ -1,0 +1,329 @@
+<div class="grid-container">
+
+    <header class="header">
+        <div class="search-container">
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" class="search-input" placeholder="search">
+            
+        </div>
+
+        <div class="header-text">
+            <h3>Generar examen</h3>
+        </div>
+
+        <div class="header-options">
+            <span><i class="fa-solid fa-gear header-options-icon"></i></span>
+            <span><i class="fa-regular fa-bell header-options-icon"></i></span>
+            <img class="perfil-icon" src="assets/img/perfil.png">
+            <span>Gino</span>
+            <i class="fa-solid fa-chevron-down header-options-icon"></i>
+        </div>
+        
+    </header>
+
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-icon"><a ><i class="fa-solid fa-house menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fa-solid fa-warehouse menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fa-solid fa-circle-play menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fa-solid fa-folder-closed menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fas fa-robot menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fa-solid fa-chart-column menu-icon"></i></a></li>
+            <li class="sidebar-menu-icon"><a><i class="fa-solid fa-arrow-right-to-bracket menu-icon"></i></a></li>
+            
+        </ul>
+    </aside>
+
+    <main class="main">
+
+        <div class="seccion1">
+           
+            
+<div class="container">
+            
+    <div class="content-examen"> <!-- Contenedor general para todos los elementos -->
+        <section class="exam-header">
+            <h1 class="centered-header">Exámenes <span class="verified"><i class="fas fa-check-circle"></i> Verificado</span></h1>
+            <p class="paragraph">En la sección de "Exámenes", todas las pruebas han sido verificadas para asegurar su calidad y precisión..En la sección de "Exámenes", todas las pruebas han sido verificadas para asegurar su calidad y precisión....</p>
+        </section>
+
+        <script src="js.js"></script> <!-- Enlace al archivo JavaScript -->
+
+
+
+    <div class="content-two">
+
+            <!-- Contenedor general para todos los elementos -->
+            <div class="exam-filter">
+                <button class="filter-button active" onclick="activateFilter('Publicado')">Publicado (250)</button>
+                <button class="filter-button" onclick="activateFilter('Borrador')">Borrador (17)</button>
+                <button class="filter-button" onclick="activateFilter('Aprobados')">Aprobados (10)</button>
+                <input type="text" class="form-control search-bar" placeholder="Buscar...">
+                <i class="fas fa-search search-icon position-absolute"></i>
+                <button class="generate-button">Generar</button>
+            </div>
+
+
+
+            <div id="exam-list">
+                <ul class="list publicado">
+                    <!-- MODELO-->
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">❌</span>
+                                <h3>Examen de Práctica - Álgebra Básica</h3>
+                                <div class="tags">
+                                    <span class="tag tag-mate">MATE</span>
+                                    <span class="tag tag-algebra">ÁLGEBRA</span>
+                                    <span class="tag tag-quiz">20 quiz</span>
+                                    <span class="tag tag-pollito">Pollito</span>
+                                    <span class="tag tag-uni">UNI</span>
+                                    <span class="tag tag-verified">Verificado</span>
+                                
+                                </div>
+
+                                <div class="options">
+                                    <i class="fa fa-ellipsis-v" onclick="toggleMenu()"></i> <!-- Botón de los tres puntos -->
+                                    <div class="dropdown-menu" id="menu">
+                                        <ul>
+                                            <li><a href="#">Editar</a></li>
+                                            <li><a href="#">Eliminar</a></li>
+                                            <li><a href="#">Compartir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            <div class="exam-info">
+                                <span class="date">
+                                    <i class="fa fa-calendar-alt"></i> <!-- Icono de calendario -->
+                                    Jan 2, 2024 at 10:00 am</span>
+                                <span class="duration">60</span>
+                                <span class="favorite">♡</span>
+                            </div>
+                            
+                        </div>
+                    </li>
+                    <!---MODELO -->
+
+
+
+
+                    
+                        
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">❌</span>
+                                <h3>Examen de Práctica - Geometría Avanzada</h3>
+                                <div class="tags">
+                                    <span class="tag tag-mate">MATE</span>
+                                    <span class="tag tag-geo">GEOMETRÍA</span>
+                                    <span class="tag tag-quiz">15 quiz</span>
+                                    <span class="tag tag-pollito">Pollito</span>
+                                    <span class="tag tag-uni">UNI</span>
+                                    <span class="tag tag-verified">Verificado</span>
+                                </div>
+                                <div class="options">
+                                    <i class="fa fa-ellipsis-v" onclick="toggleMenu()"></i>
+                                    <div class="dropdown-menu" id="menu">
+                                        <ul>
+                                            <li><a href="#">Editar</a></li>
+                                            <li><a href="#">Eliminar</a></li>
+                                            <li><a href="#">Compartir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    Feb 5, 2024 at 11:00 am</span>
+                                <span class="duration">45</span>
+                                <span class="favorite">♡</span>
+                            </div>
+                        </div>
+                    </li>
+
+
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">❌</span>
+                                <h3>Examen de Práctica - Estadística Descriptiva</h3>
+                                <div class="tags">
+                                    <span class="tag tag-mate">MATE</span>
+                                    <span class="tag tag-estadistica">ESTADIS</span>
+                                    <span class="tag tag-quiz">25 quiz</span>
+                                    <span class="tag tag-pollito">Pollito</span>
+                                    <span class="tag tag-uni">UNI</span>
+                                    <span class="tag tag-verified">Verificado</span>
+                                </div>
+                                <div class="options">
+                                    <i class="fa fa-ellipsis-v" onclick="toggleMenu()"></i>
+                                    <div class="dropdown-menu" id="menu">
+                                        <ul>
+                                            <li><a href="#">Editar</a></li>
+                                            <li><a href="#">Eliminar</a></li>
+                                            <li><a href="#">Compartir</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    Apr 15, 2024 at 1:00 pm</span>
+                                <span class="duration">60</span>
+                                <span class="favorite">♡</span>
+                            </div>
+                        </div>
+                    </li>
+
+
+
+
+                </ul>
+
+                
+                <ul class="list borrador" style="display: none;">
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">❌</span>
+                                <h3>Examen de Práctica - Historia (Borrador)</h3>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">Ene 15, 2024 at 10:00 am</span>
+                                <span class="duration">60 min</span>
+                                <div class="tags">
+                                    <span class="tag">HISTORIA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">❌</span>
+                                <h3>Examen de Práctica - Literatura (Borrador)</h3>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">Ene 20, 2024 at 11:00 am</span>
+                                <span class="duration">30 min</span>
+                                <div class="tags">
+                                    <span class="tag">LITERATURA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list aprobados" style="display: none;">
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">✔️</span>
+                                <h3>Examen de Práctica - Física (Aprobado)</h3>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">Feb 10, 2024 at 09:00 am</span>
+                                <span class="duration">75 min</span>
+                                <div class="tags">
+                                    <span class="tag">FÍSICA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="exam-card">
+                            <div class="exam-title">
+                                <span class="exam-status warning">✔️</span>
+                                <h3>Examen de Práctica - Química (Aprobado)</h3>
+                            </div>
+                            <div class="exam-info">
+                                <span class="date">Feb 15, 2024 at 08:00 am</span>
+                                <span class="duration">90 min</span>
+                                <div class="tags">
+                                    <span class="tag">QUÍMICA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
+
+        </div>
+        <!-- Contenedor general para todos los elementos -->
+
+
+
+        <div id="pagination-controls" class="pagination">
+            <div class="pagination">
+                <button>«</button>
+                <button>1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>4</button>
+                <button>»</button>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+           
+
+        </div>
+
+        <div class="seccion2">
+            <div class="seccion2-header">
+                <label class="seccion2-text">My Devices</label>
+                <div class="seccion2-header-action">
+                    <label class="block-on">ON<i class="fa-solid fa-chevron-down"></i></label>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                                   
+            </div>
+
+            <div class="seccion2-container">
+                <div class="container-card">
+                    <canvas class="card morado"></canvas>
+                    <canvas class="card rosado"></canvas>
+
+                </div>
+
+                <div class="container-card">
+                    <canvas class="card naranjado"></canvas>
+                    <canvas class="card celeste"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

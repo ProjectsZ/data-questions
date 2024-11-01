@@ -1,0 +1,229 @@
+
+/*CABEZ DE LA PAGINA*/
+
+.header{
+    grid-area: header;
+    background:rgb(247, 244, 244);
+    display: flex;
+    align-items: center;
+    padding: 10px 30px 10px 30px;
+    justify-content: space-between;
+
+}
+
+.header-options-icon{
+    font-size: 14px;
+    cursor: pointer;
+
+}
+
+.header-options{
+    display: flex;
+    border-radius: 25px;
+    background-color: white;
+    align-items: center;
+    padding: 15px;
+    height: 65%;
+    gap: 20px;
+    
+}
+
+.header-text{
+    color: #4e4b4b;
+}
+
+/*ESTYLOS DEL SIDEBAR*/
+
+.sidebar{
+    grid-area: sidebar;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    height: 100vh;
+    margin:15px 0;
+    --hoverx:transparent;
+}
+
+.sidebar-menu{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin:15px;
+    background-color: #00B69B;
+    gap: 50px;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.sidebar-menu-icon {
+    list-style: none;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    border-radius: 20px 0px 0px 20px;
+    position: relative; /* Necesario para que el z-index funcione */
+    z-index: 200; /* Mantén este z-index alto */
+}
+
+.sidebar-menu-icon::before {
+    content: '';
+    position: absolute;
+    left: 100%; /* Mantener esta posición */
+    top: -11.5%; /* Mantener esta posición */
+    transform: translateX(-80%); /* Ajustar para centrarlo */
+    width: 0;
+    height: 0;
+    border-top: 24px solid transparent;
+    border-bottom: 24px solid transparent;
+    border-right: 58px solid var(--hoverx); /* Color del triángulo en el before */
+    z-index: -1; /* Cambiar a un valor negativo */
+}
+
+
+.sidebar-menu-icon:hover{
+    background-color: white;
+    color:#00B69B;
+    --hoverx:#FFFF;
+}
+.menu-icon{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/*contenido de la pagina*/
+.main{
+    grid-area: main;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+    
+}
+
+.seccion1{
+    width: 75%;
+    border-radius:25px ;
+    height: auto;
+    background: rgb(247, 244, 244);
+
+}
+
+.seccion2{
+    width: 25%;
+    height: auto;
+    border-radius:25px ;
+    background:rgb(247, 244, 244) ;
+    padding: 0px 15px 0px;
+}
+
+.seccion2-header{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    justify-content: space-between;
+
+}
+
+.seccion2-header-action{
+    display: flex;
+    gap: 15px;
+}
+
+.block-on{
+    border-radius: 5px;
+    background-color: #cfd8e5;
+}
+
+.seccion2-container{
+    width: 100%;
+    height:200px;
+    display: flex;
+    gap:20px;
+    padding: 10px 0px 10px 0px;
+}
+
+.container-card{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:10px
+
+
+}
+.card{
+    width: 100%;
+    height: 47%;
+    background-color: aqua;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.morado{
+    background-color: rgb(247, 185, 255);
+
+}
+
+.naranjado{
+    background-color: rgb(244, 183, 71);
+
+}
+
+.rosado{
+    background-color:rgb(244, 199, 224);
+
+}
+
+.celeste{
+    background-color: rgb(109, 191, 246);
+
+}
+/*maquetacion o distribuir posiciones*/
+.grid-container{
+    display: grid;
+    grid-template-areas: 
+    "sidebar header"
+    "sidebar main"
+    ;
+
+    grid-template-columns: 100px auto;
+    grid-template-rows: 100px auto;
+}
+
+/* Estilo del contenedor de la barra de búsqueda */
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: #e7e8ea;
+    border-radius: 20px;
+    padding: 5px 15px;
+    height: 70%;
+    width: 650px;
+}
+
+/* Estilo del input de búsqueda */
+.search-input {
+    border:none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Estilo del ícono de búsqueda */
+.search-icon {
+    font-size: 20px;
+    color: #858484;
+    margin-left: 10px;
+}
+
+.perfil-icon{
+    width: 45px;
+    height: 45px;
+}
+

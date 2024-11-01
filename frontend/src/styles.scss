@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    font-family: "public dans", sans-serif ;
+    font-size: 1rem;    
+}
+
+.flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Usar flex para alinear */
+    justify-content: flex-start; /* Alinear a la izquierda */
+    align-items: flex-start; /* Alinear en la parte superior */
+    min-height: 100vh;
+  }
+  
