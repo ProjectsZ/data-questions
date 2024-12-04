@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValidateJWTcustom = void 0;
+const express_1 = require("express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = __importDefault(require("./../models/user.model"));
 class ValidateJWTcustom {
@@ -15,7 +16,7 @@ class ValidateJWTcustom {
      * @param res: es de tipo "Response"; para controlar/mandar errores usando status().json
      * @param next: es de tipo "any"; es el middleware, que avanzará si se realiza el matching route.
      *        O simplemente es una especie de callback, para pasar al siguiente middleware. */
-    validateJWT(req, res, next) {
+    validateJWT(req, res = express_1.response, next) {
         /**Naturalemnte el JWT  */
         let key_vs = `${process.env.JWT_SECRET}`;
         // /**Leer el token */
@@ -32,7 +33,7 @@ class ValidateJWTcustom {
         try {
             const uid = jsonwebtoken_1.default.verify(token, key_vs);
             // console.log(uid);
-            req.uid = uid;
+            req.usr_id = uid;
             //     /**Necesario para validar datos */
             next();
         }
@@ -56,7 +57,7 @@ class ValidateJWTcustom {
                     msg: "User not exist"
                 });
             }
-            if (usuarioDB.usr_role !== 'ADMIN_ROLE' /* && usrid === uid */) {
+            if (usuarioDB.usr_role.r_name !== 'ADMIN_ROLE') { /* && usrid === uid */
                 return res.status(403).json({
                     ok: false,
                     msg: 'You have no privilege to do that'

@@ -1,118 +1,124 @@
+import PersonalInformation from "./../models/informacion-personal.model";  
+import Pregunta from "./../models/pregunta.model";
+import Alternativa from "./../models/alternativa.model";
 
-import fs from 'fs';
-import path from 'path';
-import Busboy from 'busboy';
-import os from "os";
 
-type Dict = {
-    [key: string]: any
-}
+import fs from 'fs'; /* Paquete de Node: para leer file system, carpetas, archivos */
 
-export class UpdateFile {
+export class UpdateImage{
     
-    constructor(){  }
+    
+    constructor(){ 
+     }
+    
+    /** ----------------------------------------------------------------------------------
+     * @Param name_type: tipo de parametros que trae e.g.: ['users', 'document', 'document-template']
+     * @Param id: id del opcionA
+     * @Param fileName: Nombre del archivo + tipo de extensión       */
+    public async updateImage(name_type: String, id: String, fileName: any): Promise<any>{
+
+        let pathOld = '';
+
+        // name_type pueden ser valores validos ['users', 'document', 'document-template']
+        switch( name_type ){
+            case 'Alternativa':
+                  const opcionA = await Alternativa.findById( id );
+                  if(!opcionA){
+                      console.log("No se logro subir la imagen!");
+                      return false;
+                  }
+
+                  pathOld = `./uploads/${name_type}/${ opcionA.opt_img }`;
+                  this.deleteImage( pathOld );
+                  
+                  opcionA.opt_img = fileName;
+                  await opcionA.save();
+                  return true;
+                  break; // nunca llegará al break por que al terminar siempre retorna true
+
+            case 'InformacionPersonal':
+                const personalInfo = await PersonalInformation.findById(id);
+                if(!personalInfo){ // para cortar la subida de la imagen cuando no existe
+                    console.log("No se logro subir la imagen");
+                    return false;
+                }
+
+                pathOld=`./uploads/${name_type}/${personalInfo.infp_img}`
+                /* Borrar la imagen */
+                this.deleteImage( pathOld );
+
+                personalInfo.infp_img = fileName;
+                await personalInfo.save();
+                return true;
+                break; // nunca llegará al break por que al terminar siempre retorna true
+            case 'Pregunta':
+                const questionP = await Pregunta.findById( id );
+                if(!questionP){
+                    console.log("No se logro subir la imagen.");
+                    return false;
+                }
+
+                pathOld=`./uploads/${name_type}/${questionP.pr_img}`;
+                this.deleteImage( pathOld );
+
+                questionP.pr_img = fileName;
+                await questionP.save();
+                return true;
+                break; // nunca llegará al break por que al terminar siempre retorna true
+            
+        }
+    }
+
+    /** ----------------------------------------------------------------------------------
+     * @Param my_model: tipo any, modelo 
+     * @Param name_type: tipo de parametros que trae e.g.: ['users', 'document', 'document-template']
+     * @Param id: id del opcionA
+     * @Param fileName: Nombre del archivo + tipo de extensión       */
+    public async updateImg( My_model:any, name_type: string, abbreviation: string, id: String, fileName: any){
+
+        let pathOld = '';
+
+        const data = await My_model.findById( id );
+        if(!data){
+            console.log("No se logró subir la imagen!");
+            return false;
+        }
+
+        console.log(data);
+
+        switch (abbreviation) {
+            case 'opt':
+              pathOld = `./uploads/${ name_type }/${ data.tm_img }`;
+              this.deleteImage( pathOld );
+              data.opt_img = fileName;
+              return true;
+              break;
+            case 'pr':
+              pathOld = `./uploads/${ name_type }/${ data.tm_img }`;
+              this.deleteImage( pathOld );
+              data.pr_img = fileName;
+              return true;
+              break;
+            case 'infp':
+                pathOld = `./uploads/${ name_type }/${ data.usr_img }`;
+                this.deleteImage( pathOld );
+                data.infp_img = fileName;
+                await data.save();
+                return true;
+                break;
+            default:
+                break;
+        }        
+    }
 
     /**
-     * 
-     * app.post('/upload', formMiddlware, (req: any, res: any) => {
-    console.log(req.body);
-    console.log(req.files);
-    res.sendStatus(200);
-    });
+     * Borrar la imagen almacenada
+     * @param path es el path de donde se encuentra el archivo
      */
-    formMiddlware(req: any , res: any, next: any) {
-        // See https://cloud.google.com/functions/docs/writing/http#multipart_data
-       
-        const busboy = Busboy({
-          headers: req.headers,
-          limits: {
-            // Cloud functions impose this restriction anyway
-            fileSize: 10 * 1024 * 1024,
-          }
-        });
-
-        const fields: Dict = {};
-        const files: any[] = [];
-        const fileWrites: any[] = [];
-
-        // Note: os.tmpdir() points to an in-memory file system on GCF
-        // Thus, any files in it must fit in the instance's memory.
-        // --> C:\Users\Skyrider\AppData\Local\Temp
-        const tempDir = os.tmpdir();
-
-        busboy.on('field', (key: string, value: any) => {
-          // You could do additional deserialization logic here, values will just be
-          // strings
-          fields[key] = value;
-        });
-
-        busboy.on('file', (fieldname: any, file: any, filename: any, encoding: any, mimetype: any) => {
-          const filepath = path.join(tempDir, filename);
-          console.log(`Handling file upload field ${fieldname}: ${filename} (${filepath})`);
-          const writeStream = fs.createWriteStream(filepath);
-          file.pipe(writeStream);
-                 fileWrites.push(new Promise((resolve, reject) => {
-            file.on('end', () => writeStream.end());
-            writeStream.on('finish', () => {
-              fs.readFile(filepath, (err, buffer) => {
-                const size = Buffer.byteLength(buffer);
-                console.log(`${filename} is ${size} bytes`);
-                if (err) {
-                  return reject(err);
-                }
-                       files.push({
-                  fieldname,
-                  originalname: filename,
-                  encoding,
-                  mimetype,
-                  buffer,
-                  size,
-                });
-                       try {
-                  fs.unlinkSync(filepath);
-                } catch (error) {
-                  return reject(error);
-                }
-                       resolve(files);
-              });
-            });
-            writeStream.on('error', reject);
-          }));
-        });
-               busboy.on('finish', () => {
-          Promise.all(fileWrites)
-            .then(() => {
-              req.body = fields;
-              req.files = files;
-              next();
-            })
-            .catch(next);
-        });
-
-        busboy.end(req.rawBody);
-
-        console.log("-->", files);
+    public deleteImage( path: any ){
+        /* Si existe un path  */
+        if( fs.existsSync( path ) ){
+            fs.unlinkSync( path ); // subscribira/Borrando la imagen anterior
+        }
     }
-
-    /**
-     * @param limitCharacter ( limit character or max character random )
-     * @returns caracters random e.g.: fk0peg0379exl14gxfbk6afo     */
-    uniqueAlphaNumericId(limitCharacter: number){
-        const heyStack = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const randomInt = () => Math.floor(Math.random() * Math.floor(heyStack.length));
-        const length: number = limitCharacter;
-        return  Array.from({length}, () => heyStack[randomInt()]).join('');
-        // return "fred";
-    }
-    
-    
-    getFilePath(folder:string, fileId: any, fileName:any){
-
-        const soloNombre = fileName.split('.');
-        const extensionArchivo = soloNombre[ soloNombre.length -1 ];
-
-        // return `${ folder.split(" ").join("") }/${ fileId }-${ fileName.split(" ").join("") }`;
-        return `${ folder.split(" ").join("") }/${ fileId }.${ extensionArchivo }`;
-    }
-
 }

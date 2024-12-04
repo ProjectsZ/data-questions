@@ -4,6 +4,9 @@
 tsc --init
 
 # install.
+npm i --save-dev @types/express-fileupload
+npm i express-fileupload
+npm i --save-dev @types/uuid
 npm i --save-dev @types/bcryptjs
 npm i bcryptjs
 npm i --save @types/busboy

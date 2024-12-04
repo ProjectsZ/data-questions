@@ -9,6 +9,12 @@ import cors from 'cors';
 
 /* Routes */
 import { AuthRoute, UsersRoute } from './routes/auth.route';
+import { PreguntaRoute } from './routes/pregunta.route';
+import { InformacionPersonalRoute } from './routes/informacion-personal.route';
+import { ExamenRoute } from './routes/examen.route';
+import { CursoRoute } from './routes/curso.route';
+import { CategoriaRoute } from './routes/categoria.route';
+import { AlternativaRoute } from './routes/alternativa.route';
 
 // Variables de entorno  ******************************
 const config = dotenv.config({ path: 'process.env' });
@@ -27,7 +33,13 @@ class App{
     // Routes: Users, Login
     usersR: UsersRoute = new UsersRoute();
     userLoginR: AuthRoute = new AuthRoute();
-   
+    preguntaR: PreguntaRoute = new PreguntaRoute();
+    infoPersonalR: InformacionPersonalRoute = new InformacionPersonalRoute();
+    examenR: ExamenRoute = new ExamenRoute();
+    evaluacionR: ExamenRoute = new ExamenRoute();
+    cursoR: CursoRoute = new CursoRoute();
+    categoriaR: CategoriaRoute = new CategoriaRoute();
+    alternativaR: AlternativaRoute = new AlternativaRoute();
 
 
     constructor(){
@@ -46,7 +58,13 @@ class App{
         // Rutas usando Middlewares  localhost:4100/api/users
         this.app.use( '/api/users', this.usersR.router );           //  './routes/user'
         this.app.use( '/api/login', this.userLoginR.router );       //  (Login) usando Middlewares  
-
+        this.app.use( '/api/pregunta', this.preguntaR.router );     //  (Pregunta) usando Middlewares
+        this.app.use( '/api/informacion-personal', this.infoPersonalR.router ); //  (InformacionPersonal) usando Middlewares    
+        this.app.use( '/api/examen', this.examenR.router );         //  (Examen) usando Middlewares
+        this.app.use( '/api/evaluacion', this.evaluacionR.router ); //  (Evaluacion) usando Middlewares
+        this.app.use( '/api/curso', this.cursoR.router );           //  (Curso) usando Middlewares
+        this.app.use( '/api/categoria', this.categoriaR.router );   //  (Categoria) usando Middlewares
+        this.app.use( '/api/alternativa', this.alternativaR.router ); //  (Alternativa) usando Middlewares
 
         this.app.listen( this.PORT, ()=>{
                 console.log("servidor corriendo en el puerto "

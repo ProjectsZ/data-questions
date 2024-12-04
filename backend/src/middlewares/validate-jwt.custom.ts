@@ -16,7 +16,7 @@ export class ValidateJWTcustom{
      * @param res: es de tipo "Response"; para controlar/mandar errores usando status().json
      * @param next: es de tipo "any"; es el middleware, que avanzará si se realiza el matching route.
      *        O simplemente es una especie de callback, para pasar al siguiente middleware. */
-    validateJWT(req: any, res: Response, next: any){
+    validateJWT(req: any, res: Response = response, next: any): any{
 
         /**Naturalemnte el JWT  */
         let key_vs = `${ process.env.JWT_SECRET }`;
@@ -35,7 +35,7 @@ export class ValidateJWTcustom{
         try{
             const uid  =  jwt.verify( token, key_vs );
             // console.log(uid);
-            req.uid = uid; 
+            req.usr_id = uid; 
             //     /**Necesario para validar datos */
             next();
 
@@ -65,7 +65,7 @@ export class ValidateJWTcustom{
                 });
             }
 
-            if( usuarioDB.usr_role !== 'ADMIN_ROLE'  /* && usrid === uid */ ){
+            if( usuarioDB.usr_role.r_name !== 'ADMIN_ROLE'){ /* && usrid === uid */
                 return res.status(403).json({
                     ok: false,
                     msg: 'You have no privilege to do that'

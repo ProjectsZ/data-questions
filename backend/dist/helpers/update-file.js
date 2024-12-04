@@ -3,103 +3,107 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateFile = void 0;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const busboy_1 = __importDefault(require("busboy"));
-const os_1 = __importDefault(require("os"));
-class UpdateFile {
-    constructor() { }
+exports.UpdateImage = void 0;
+const informacion_personal_model_1 = __importDefault(require("./../models/informacion-personal.model"));
+const pregunta_model_1 = __importDefault(require("./../models/pregunta.model"));
+const alternativa_model_1 = __importDefault(require("./../models/alternativa.model"));
+const fs_1 = __importDefault(require("fs")); /* Paquete de Node: para leer file system, carpetas, archivos */
+class UpdateImage {
+    constructor() {
+    }
+    /** ----------------------------------------------------------------------------------
+     * @Param name_type: tipo de parametros que trae e.g.: ['users', 'document', 'document-template']
+     * @Param id: id del opcionA
+     * @Param fileName: Nombre del archivo + tipo de extensión       */
+    async updateImage(name_type, id, fileName) {
+        let pathOld = '';
+        // name_type pueden ser valores validos ['users', 'document', 'document-template']
+        switch (name_type) {
+            case 'Alternativa':
+                const opcionA = await alternativa_model_1.default.findById(id);
+                if (!opcionA) {
+                    console.log("No se logro subir la imagen!");
+                    return false;
+                }
+                pathOld = `./uploads/${name_type}/${opcionA.opt_img}`;
+                this.deleteImage(pathOld);
+                opcionA.opt_img = fileName;
+                await opcionA.save();
+                return true;
+                break; // nunca llegará al break por que al terminar siempre retorna true
+            case 'InformacionPersonal':
+                const personalInfo = await informacion_personal_model_1.default.findById(id);
+                if (!personalInfo) { // para cortar la subida de la imagen cuando no existe
+                    console.log("No se logro subir la imagen");
+                    return false;
+                }
+                pathOld = `./uploads/${name_type}/${personalInfo.infp_img}`;
+                /* Borrar la imagen */
+                this.deleteImage(pathOld);
+                personalInfo.infp_img = fileName;
+                await personalInfo.save();
+                return true;
+                break; // nunca llegará al break por que al terminar siempre retorna true
+            case 'Pregunta':
+                const questionP = await pregunta_model_1.default.findById(id);
+                if (!questionP) {
+                    console.log("No se logro subir la imagen.");
+                    return false;
+                }
+                pathOld = `./uploads/${name_type}/${questionP.pr_img}`;
+                this.deleteImage(pathOld);
+                questionP.pr_img = fileName;
+                await questionP.save();
+                return true;
+                break; // nunca llegará al break por que al terminar siempre retorna true
+        }
+    }
+    /** ----------------------------------------------------------------------------------
+     * @Param my_model: tipo any, modelo
+     * @Param name_type: tipo de parametros que trae e.g.: ['users', 'document', 'document-template']
+     * @Param id: id del opcionA
+     * @Param fileName: Nombre del archivo + tipo de extensión       */
+    async updateImg(My_model, name_type, abbreviation, id, fileName) {
+        let pathOld = '';
+        const data = await My_model.findById(id);
+        if (!data) {
+            console.log("No se logró subir la imagen!");
+            return false;
+        }
+        console.log(data);
+        switch (abbreviation) {
+            case 'opt':
+                pathOld = `./uploads/${name_type}/${data.tm_img}`;
+                this.deleteImage(pathOld);
+                data.opt_img = fileName;
+                return true;
+                break;
+            case 'pr':
+                pathOld = `./uploads/${name_type}/${data.tm_img}`;
+                this.deleteImage(pathOld);
+                data.pr_img = fileName;
+                return true;
+                break;
+            case 'infp':
+                pathOld = `./uploads/${name_type}/${data.usr_img}`;
+                this.deleteImage(pathOld);
+                data.infp_img = fileName;
+                await data.save();
+                return true;
+                break;
+            default:
+                break;
+        }
+    }
     /**
-     *
-     * app.post('/upload', formMiddlware, (req: any, res: any) => {
-    console.log(req.body);
-    console.log(req.files);
-    res.sendStatus(200);
-    });
+     * Borrar la imagen almacenada
+     * @param path es el path de donde se encuentra el archivo
      */
-    formMiddlware(req, res, next) {
-        // See https://cloud.google.com/functions/docs/writing/http#multipart_data
-        const busboy = (0, busboy_1.default)({
-            headers: req.headers,
-            limits: {
-                // Cloud functions impose this restriction anyway
-                fileSize: 10 * 1024 * 1024,
-            }
-        });
-        const fields = {};
-        const files = [];
-        const fileWrites = [];
-        // Note: os.tmpdir() points to an in-memory file system on GCF
-        // Thus, any files in it must fit in the instance's memory.
-        // --> C:\Users\Skyrider\AppData\Local\Temp
-        const tempDir = os_1.default.tmpdir();
-        busboy.on('field', (key, value) => {
-            // You could do additional deserialization logic here, values will just be
-            // strings
-            fields[key] = value;
-        });
-        busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-            const filepath = path_1.default.join(tempDir, filename);
-            console.log(`Handling file upload field ${fieldname}: ${filename} (${filepath})`);
-            const writeStream = fs_1.default.createWriteStream(filepath);
-            file.pipe(writeStream);
-            fileWrites.push(new Promise((resolve, reject) => {
-                file.on('end', () => writeStream.end());
-                writeStream.on('finish', () => {
-                    fs_1.default.readFile(filepath, (err, buffer) => {
-                        const size = Buffer.byteLength(buffer);
-                        console.log(`${filename} is ${size} bytes`);
-                        if (err) {
-                            return reject(err);
-                        }
-                        files.push({
-                            fieldname,
-                            originalname: filename,
-                            encoding,
-                            mimetype,
-                            buffer,
-                            size,
-                        });
-                        try {
-                            fs_1.default.unlinkSync(filepath);
-                        }
-                        catch (error) {
-                            return reject(error);
-                        }
-                        resolve(files);
-                    });
-                });
-                writeStream.on('error', reject);
-            }));
-        });
-        busboy.on('finish', () => {
-            Promise.all(fileWrites)
-                .then(() => {
-                req.body = fields;
-                req.files = files;
-                next();
-            })
-                .catch(next);
-        });
-        busboy.end(req.rawBody);
-        console.log("-->", files);
-    }
-    /**
-     * @param limitCharacter ( limit character or max character random )
-     * @returns caracters random e.g.: fk0peg0379exl14gxfbk6afo     */
-    uniqueAlphaNumericId(limitCharacter) {
-        const heyStack = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const randomInt = () => Math.floor(Math.random() * Math.floor(heyStack.length));
-        const length = limitCharacter;
-        return Array.from({ length }, () => heyStack[randomInt()]).join('');
-        // return "fred";
-    }
-    getFilePath(folder, fileId, fileName) {
-        const soloNombre = fileName.split('.');
-        const extensionArchivo = soloNombre[soloNombre.length - 1];
-        // return `${ folder.split(" ").join("") }/${ fileId }-${ fileName.split(" ").join("") }`;
-        return `${folder.split(" ").join("")}/${fileId}.${extensionArchivo}`;
+    deleteImage(path) {
+        /* Si existe un path  */
+        if (fs_1.default.existsSync(path)) {
+            fs_1.default.unlinkSync(path); // subscribira/Borrando la imagen anterior
+        }
     }
 }
-exports.UpdateFile = UpdateFile;
+exports.UpdateImage = UpdateImage;

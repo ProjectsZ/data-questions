@@ -24,36 +24,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-;
-;
-const UserSchema = new mongoose_1.Schema({
-    usr_username: { type: String, required: true },
-    usr_email: { type: String, required: true },
-    usr_password: { type: String, required: true },
-    usr_recoveryToken: { type: String, default: '' },
-    usr_role: {
-        r_name: { type: String, required: true, default: 'USER_ROLE' },
-        r_description: { type: String },
-        r_level: { type: String, required: true, default: 'chicken' },
-    },
-    usr_is_google_authenticated: {
-        type: Boolean,
-        default: false
-    },
-    usr_is_active: { type: Boolean, default: false },
-    usr_updatedAt: { type: Date },
-    usr_createdAt: { type: Date, default: Date.now, required: true },
-    usr_infp_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'InformacionPersonal' }
+const PersolInformation = new mongoose_1.Schema({
+    infp_name: { type: String, require: true },
+    infp_lastname: { type: String, require: true },
+    infp_telephone: { type: String, require: true },
+    infp_img: { type: String, require: true },
+    infp_birth_date: { type: String, require: true }
 });
 /* subscribir el method - renombrar _id   (MODO 2)  */
-UserSchema.methods.toJSON = function () {
+PersolInformation.methods.toJSON = function () {
     const { _id, __v, password, ...data } = this.toObject();
-    data.usr_id = _id;
+    data.infp_id = _id;
     return data;
 };
-// usrusername, add usr_firstName and usr_lastName in interface and Schema
-// UserSchema.virtual("usrusername").get(function(this: { usr_firstName: string, usr_lastName: string}) {
-//     return this.usr_firstName + " " + this.usr_lastName ;
-// }) ;
 /* export the model and return your IUser interface */
-exports.default = mongoose_1.default.model('User', UserSchema);
+exports.default = mongoose_1.default.model('InformacionPersonal', PersolInformation);

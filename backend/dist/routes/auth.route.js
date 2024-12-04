@@ -10,7 +10,7 @@ const validate_jwt_custom_1 = require("./../middlewares/validate-jwt.custom");
 const email_data_custom_1 = require("../middlewares/email-data.custom");
 // Controllers
 const auth_controller_1 = require("./../controllers/auth.controller");
-const users_controller_1 = require("../controllers/users.controller");
+const user_controller_1 = require("../controllers/user.controller");
 class AuthRoute {
     constructor() {
         this.router = (0, express_1.Router)();
@@ -22,20 +22,18 @@ class AuthRoute {
         this.getRouteLoginRenewToken();
     }
     postRoutesLogin() {
-        this.router.post('/', (req, res) => {
+        this.router.post('/', [
             (0, express_validator_1.check)('usr_email', 'El email es obligatorio').isEmail(),
-                (0, express_validator_1.check)('usr_password', 'El password es obligatorio').not().isEmpty(),
-                this.validarCampos.validateInputs;
-            this.authC.login;
-        });
+            (0, express_validator_1.check)('usr_password', 'El password es obligatorio').not().isEmpty(),
+            this.validarCampos.validateInputs
+        ], this.authC.login);
     }
     // Google sign-in
     postRouteLoginGoogle() {
-        this.router.post('/google', () => {
+        this.router.post('/google', [
             (0, express_validator_1.check)('token', 'El token google es obligatorio').not().isEmpty(),
-                // this.validarCampos.validateInputs,
-                this.authC.loginGoogleSignIn;
-        });
+            // this.validarCampos.validateInputs,
+        ], this.authC.loginGoogleSignIn);
     }
     getRouteLoginRenewToken() {
         this.router.get('/renew', [
@@ -48,7 +46,7 @@ class UsersRoute {
     constructor() {
         this.router = (0, express_1.Router)();
         // No se logra mandar el controlador, por que no captura los req y res de la otra clase, CORREXION MOMENTANEA HASTA LA PROXIMA ACTUALIZACION
-        this.usersC = new users_controller_1.UsersController(); // usersC: UsersController = new UsersController();
+        this.usersC = new user_controller_1.UserController(); // usersC: UsersController = new UsersController();
         this.validarCampos = new validate_data_custom_1.ValidateData();
         this.validarJWT = new validate_jwt_custom_1.ValidateJWTcustom();
         this.validarEmail = new email_data_custom_1.EmailData();
@@ -61,10 +59,9 @@ class UsersRoute {
     getRoutesUsers() {
         /* Él getUsers no se esta ejecutando (osea no se llama getUsers() )
            simplemente se está mandando como referencia a la función. */
-        this.router.get('/', () => {
+        this.router.get('/', [
             this.validarJWT.validateJWT,
-                this.usersC.getUsers;
-        });
+        ], this.usersC.getUsers);
     }
     // Registro de usuario
     postRoutesUsers() {

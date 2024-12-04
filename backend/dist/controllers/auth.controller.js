@@ -7,6 +7,7 @@ exports.AuthController = void 0;
 const express_1 = require("express");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const crypto_1 = __importDefault(require("crypto"));
 const jwt_1 = require("../helpers/jwt");
 const google_verify_1 = require("../helpers/google-verify");
 class AuthController {
@@ -37,7 +38,7 @@ class AuthController {
             res.json({
                 ok: true,
                 token,
-                name: usuarioDB.usr_name
+                name: usuarioDB.usr_username
             });
         }
         catch (error) {
@@ -104,7 +105,7 @@ class AuthController {
             else {
                 // caso contrario, si existe el usuario se siguen usándo la misma data
                 usuario = usuarioDB;
-                usuario.usr_google_access = true;
+                usuario.usr_is_google_authenticated = true;
             }
             //Guardar DB
             await usuario.save();
@@ -120,6 +121,71 @@ class AuthController {
             return res.status(401).json({
                 ok: false,
                 msg: 'El token no es correcto!'
+            });
+        }
+    }
+    // Generar y asignar un token para recuperación de contraseña
+    async setPasswordRecoveryToken(req, res = express_1.response) {
+        const { usr_email } = req.body;
+        try {
+            // Buscar el usuario por su correo electrónico
+            const usuarioDB = await user_model_1.default.findOne({ usr_email });
+            if (!usuarioDB) {
+                return res.status(404).json({
+                    ok: false,
+                    msg: 'Usuario no encontrado'
+                });
+            }
+            // Generar un token de recuperación único (usando crypto)           
+            const recoveryToken = crypto_1.default.randomBytes(32).toString('hex'); // 64 caracteres hexadecimales
+            usuarioDB.usr_recoveryToken = recoveryToken;
+            // Establecer el token y guardar el usuario
+            await usuarioDB.save();
+            // Aquí puedes enviar el token por correo electrónico al usuario (simulado)
+            // NOTA: Esto debería implementarse en un entorno de producción con un servicio de correo.
+            res.json({
+                ok: true,
+                msg: 'Token de recuperación generado.',
+                recoveryToken // Deberías enviarlo por correo en una aplicación real
+            });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al generar el token de recuperación.'
+            });
+        }
+    }
+    // Verificar si el token de recuperación es válido
+    async verifyPasswordRecoveryToken(req, res = express_1.response) {
+        const { userId, token } = req.body;
+        try {
+            // Buscar al usuario por su ID
+            const usuarioDB = await user_model_1.default.findById(userId);
+            if (!usuarioDB) {
+                return res.status(404).json({
+                    ok: false,
+                    msg: 'Usuario no encontrado'
+                });
+            }
+            // Verificar si el token coincide
+            if (usuarioDB.usr_recoveryToken !== token) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Token de recuperación no válido o expirado'
+                });
+            }
+            res.json({
+                ok: true,
+                msg: 'Token de recuperación verificado correctamente.'
+            });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al verificar el token de recuperación.'
             });
         }
     }

@@ -9,7 +9,7 @@ import { EmailData } from '../middlewares/email-data.custom';
 
 // Controllers
 import { AuthController } from './../controllers/auth.controller';
-import { UsersController } from '../controllers/users.controller';
+import { UserController } from '../controllers/user.controller';
 
 export class AuthRoute{
 
@@ -65,7 +65,7 @@ export class UsersRoute{
         router = Router();
     
         // No se logra mandar el controlador, por que no captura los req y res de la otra clase, CORREXION MOMENTANEA HASTA LA PROXIMA ACTUALIZACION
-        usersC: UsersController | any = new UsersController(); // usersC: UsersController = new UsersController();
+        usersC: UserController | any = new UserController(); // usersC: UsersController = new UsersController();
     
         validarCampos: ValidateData = new ValidateData();
         validarJWT: ValidateJWTcustom | any = new ValidateJWTcustom();

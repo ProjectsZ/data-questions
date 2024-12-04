@@ -1,17 +1,18 @@
 // Logica de lo que va hacer nuestra ruta
 import { Request, Response, response } from 'express';
-import User from '../models/user.model';
+import User, { IUser } from '../models/user.model';
 // import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs';
 import { Jwt } from '../helpers/jwt';
 
 
-export class UsersController{
+export class UserController{
 
     constructor(){
 
     }
     
+    // Obtener todos los usuarios
     async getUsers(req: Request, res: Response){
         /**Usamos un nombre cualquiera (startPage) para los parametros  */
         const startPage = Number(req.query.startPage) || 0;
@@ -20,36 +21,78 @@ export class UsersController{
         // Corre de manera simultanea el const 'usuarios' y 'totalItems'
         /**
          * all() esto adjunta en un array muchas promesas y los corre de manera simultanea.
-         */
-        
-        const [ usuarios, totalItems ] = await Promise.all([
-            User.find({}, `usr_first_name 
-                           usr_last_name 
-                           usr_email 
-                           usr_username 
-                           usr_img 
-                           usr_role 
-                           usr_tel 
-                           usr_pais 
-                           usr_dni 
-                           usr_createdAt 
-                           usr_google_access`)
-                                 .skip( startPage ) /** iniciar desde la data N° startPage */
-                                 .limit( totalPages ), /** mostrar solo totalPages datas */
-            User.countDocuments() /* por warning error: no usar .count()  */
-        ]);
+         */        
+        try{
 
+            const [ usuarios, totalItems ] = await Promise.all([
+                User.find({}, `usr_email 
+                               usr_username 
+                               usr_img 
+                               usr_role
+                               usr_createdAt 
+                               usr_is_google_authenticated`)
+                                     .skip( startPage ) /** iniciar desde la data N° startPage */
+                                     .limit( totalPages ), /** mostrar solo totalPages datas */
+                User.countDocuments() /* por warning error: no usar .count()  */
+            ]);
+    
+    
+            res.json({
+                    ok: true,
+                    usuarios,
+                    total_user: totalItems
+                });
 
-        res.json({
-                ok: true,
-                usuarios,
-                total_user: totalItems
+        }catch(error){
+            console.error(error);
+
+            res.status(500).json({
+                ok:false,
+                msg: 'Error al obtener los Usuarios'
             });
+        }
+
+    }
+
+    // Obtener un usuario por su ID
+    async getUserById(req: Request, res: Response) {
+        const userId = req.params.id;
+
+        try {
+            const usuario = await User.findById(userId, `
+                                                        usr_username 
+                                                        usr_email 
+                                                        usr_role 
+                                                        usr_is_active 
+                                                        usr_createdAt 
+                                                        usr_updatedAt
+                                                        `)
+                                        .populate('usr_infp_id', 'infp_name infp_lastname infp_telephone infp_img');  // Populamos los datos de InformacionPersonal
+                                                        ;
+            if (!usuario) {
+                return res.status(404).json({
+                    ok: false,
+                    msg: 'Usuario no encontrado'
+                });
+            }
+
+            res.json({
+                ok: true,
+                usuario
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al obtener el usuario.'
+            });
+        }
     }
 
     async createUsers(req: Request, res: Response = response){
 
-        const { usr_password, usr_email, usr_telephone } = req.body;
+        const { usr_password, usr_email, usr_username } = req.body;
         
         try{
             /* Validando si existe ya un email en la base de datos
@@ -65,16 +108,17 @@ export class UsersController{
 
             /* Validando si el teléfono sea único
              * */
-            const existTelephone = await User.findOne( { usr_telephone } );
+            const existUsername = await User.findOne( { usr_username } );
 
-            if( existTelephone ){
+            if( existUsername ){
               return res.status(400).json({
                   ok: false,
-                  msg: 'el número de teléfono ya se encuentra en uso!...'
+                  msg: 'El usuario ya se encuentra en uso!...'
               });
             }
             
-            const usuario = new User( req.body );
+            // Crear el nuevo User
+            const usuario: IUser = new User( req.body );
             
             /* Encriptar contraseña */
             const salt = bcrypt.genSaltSync(); /* esto genera data de manera aleatoria */
@@ -88,7 +132,7 @@ export class UsersController{
               (para evitar errores)*/
 
              /**Token */
-             const token = await new Jwt().generateJWT(usuario.id);
+             const token = await new Jwt().generateJWT(usuario.usr_id || usuario._id);
 
             res.json({
                     ok: true,
@@ -113,6 +157,10 @@ export class UsersController{
     async updateUser(req: Request, res: Response = response){
         // Validar token y comprobar si es el usuario correcto
         /** obteniendo el id  */
+        
+        /* controlar campos de acceso especiales */
+        const { usr_password, usr_google_access, usr_email, ...usrUpdatedData } = req.body;
+        
         const uid = req.params.id;
 
 
@@ -128,8 +176,6 @@ export class UsersController{
               });
             }
           
-            /* controlar campos de acceso especiales */
-            const { usr_password, usr_google_access, usr_email, ...campos } = req.body;
             /** if usuario de la base de datos es literamente igual a
              *  email del que viene, entonces no se actualiza el email */
             // if(userDB.email === req.body.email){
@@ -137,7 +183,7 @@ export class UsersController{
                 //extraer dato, para evitar problemas de validación
             //     delete campos.email; 
             // }else{
-                const existEmail = await User.findOne({ email: usr_email });
+                const existEmail = await User.findOne({ usr_email });
                                             //   { email: req.body.email });
                 /**Verificamos que en email si existe (en all la base de datos) */
                 if(existEmail){
@@ -149,8 +195,8 @@ export class UsersController{
             }
 
             /* Solo se podra cambiar datos si no es usuario de google */
-            if( !userDB.usr_google_access ){
-                campos.email = usr_email;
+            if( !userDB.usr_is_google_authenticated ){
+                usrUpdatedData.email = usr_email;
             } else if( userDB.usr_email !== usr_email ){
                 return res.status(400).json({
                     ok: false,
@@ -169,7 +215,7 @@ export class UsersController{
              *   DeprecationWarning: Mongoose: `findOneAndUpdate()` and `findOneAndDelete()`
              *   without the `useFindAndModify` option set to false are deprecated */
             const usuarioActualizado = await User.findByIdAndUpdate( 
-                      uid, campos,
+                      uid, usrUpdatedData,
                      { new: true, useFindAndModify: false } );
 
             res.json({
@@ -185,6 +231,99 @@ export class UsersController{
             });
         }
     }
+
+    // Cambiar la contraseña de un usuario
+    async changePassword(req: Request, res: Response = response) {
+
+        const { usr_password_old, usr_password_new } = req.body;
+        const userId = req.params.id;
+
+        try {
+
+            const usuarioDB = await User.findById(userId);
+            if (!usuarioDB) {
+                return res.status(404).json({
+                    ok: false,
+                    msg: 'Usuario no encontrado'
+                });
+            }
+
+            // Verificar la contraseña anterior
+            const validPassword = bcrypt.compareSync(usr_password_old, usuarioDB.usr_password);
+            if (!validPassword) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Contraseña antigua incorrecta'
+                });
+            }
+
+            // Encriptar la nueva contraseña
+            const salt = bcrypt.genSaltSync();
+            const hashedPassword = bcrypt.hashSync(usr_password_new, salt);
+
+            // Actualizar la contraseña
+            usuarioDB.usr_password = hashedPassword;
+            await usuarioDB.save();
+
+            res.json({
+                ok: true,
+                msg: 'Contraseña cambiada con éxito'
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al cambiar la contraseña.'
+            });
+        }
+    }
+
+     // Restablecer la contraseña con el token de recuperación
+     async resetPassword(req: Request, res: Response = response) {
+
+        const { usr_id, token, newPassword } = req.body;
+
+        try {
+            // Buscar al usuario por ID
+            const usuarioDB = await User.findById(usr_id);
+            if (!usuarioDB) {
+                return res.status(404).json({
+                    ok: false,
+                    msg: 'Usuario no encontrado'
+                });
+            }
+
+            // Verificar si el token coincide
+            if (usuarioDB.usr_recoveryToken !== token) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Token de recuperación no válido o expirado'
+                });
+            }
+
+            // Encriptar la nueva contraseña
+            const salt = bcrypt.genSaltSync();
+            const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+            // Actualizar la contraseña del usuario
+            usuarioDB.usr_password = hashedPassword;
+            usuarioDB.usr_recoveryToken = ''; // Limpiar el token de recuperación después de usarlo
+            await usuarioDB.save();
+
+            res.json({
+                ok: true,
+                msg: 'Contraseña restablecida con éxito'
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al restablecer la contraseña.'
+            });
+        }
+    }
+
 
     /**Delete User ---------------------------------------------------
      * No se recomienda tanto borrar registros de la base de datos, sino
